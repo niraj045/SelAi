@@ -28,6 +28,12 @@ public class TestRun {
     @Enumerated(EnumType.STRING)
     private TestRunStatus status;
 
+    @Column(name = "url")
+    private String url;
+
+    @Column(name = "test_type")
+    private String testType;
+
     @Column(name = "browser")
     private String browser;
 

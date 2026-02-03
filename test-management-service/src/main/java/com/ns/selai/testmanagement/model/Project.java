@@ -49,5 +49,6 @@ public class Project {
     private String testType; // smoke, regression, functional
 
     @Column(name = "is_active")
+    @Builder.Default
     private Boolean isActive = true;
 }

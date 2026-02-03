@@ -21,7 +21,7 @@ public class AiAnalysisRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Context {
-        private String browser;
-        private String testType;
+        private String browser; // chrome, firefox, edge
+        private String testType; // smoke, regression, functional
     }
 }

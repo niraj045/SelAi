@@ -22,24 +22,28 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class ScreenshotService {
 
+    private WebDriver driver;
+
+    public void setWebDriver(WebDriver driver) {
+        this.driver = driver;
+    }
+
     @Value("${screenshot.storage.path:./screenshots}")
     private String screenshotBasePath;
 
-    /**
-     * Capture screenshot and save to storage
-     */
+    public String captureScreenshot(String stepName) {
+        return captureScreenshot(this.driver, 0L, stepName);
+    }
+
     public String captureScreenshot(WebDriver driver, Long testRunId, String stepName) {
         try {
-            // Create directory if not exists
             String testRunDir = screenshotBasePath + "/test-run-" + testRunId;
             Files.createDirectories(Paths.get(testRunDir));
 
-            // Generate filename with timestamp
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"));
             String filename = String.format("%s_%s.png", stepName.replaceAll("[^a-zA-Z0-9]", "_"), timestamp);
             String fullPath = testRunDir + "/" + filename;
 
-            // Capture screenshot
             File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
             FileUtils.copyFile(screenshot, new File(fullPath));
 
@@ -52,24 +56,6 @@ public class ScreenshotService {
         }
     }
 
-    /**
-     * Capture screenshot with custom name
-     */
-    public String captureScreenshot(WebDriver driver, String fullPath) {
-        try {
-            File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(screenshot, new File(fullPath));
-            log.info("Screenshot captured: {}", fullPath);
-            return fullPath;
-        } catch (Exception e) {
-            log.error("Failed to capture screenshot: ", e);
-            return null;
-        }
-    }
-
-    /**
-     * Get screenshot as byte array (for API response)
-     */
     public byte[] getScreenshotAsBytes(String screenshotPath) {
         try {
             Path path = Paths.get(screenshotPath);
@@ -80,9 +66,6 @@ public class ScreenshotService {
         }
     }
 
-    /**
-     * Delete all screenshots for a test run (cleanup)
-     */
     public void deleteTestRunScreenshots(Long testRunId) {
         try {
             String testRunDir = screenshotBasePath + "/test-run-" + testRunId;

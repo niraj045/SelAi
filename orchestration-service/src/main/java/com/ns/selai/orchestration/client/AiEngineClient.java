@@ -2,11 +2,11 @@ package com.ns.selai.orchestration.client;
 
 import com.ns.selai.orchestration.dto.ai.AiAnalysisRequest;
 import com.ns.selai.orchestration.dto.ai.AiAnalysisResponse;
+import com.ns.selai.orchestration.dto.ExternalServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
@@ -26,9 +26,6 @@ public class AiEngineClient {
         this.webClient = webClientBuilder.build();
     }
 
-    /**
-     * Call Python AI Engine to analyze a webpage and generate test cases
-     */
     public AiAnalysisResponse analyzeAndGenerateTests(String url, String browser, String testType) {
         log.info("Calling AI Engine to analyze URL: {}", url);
 
@@ -46,7 +43,7 @@ public class AiEngineClient {
                     .bodyValue(request)
                     .retrieve()
                     .bodyToMono(AiAnalysisResponse.class)
-                    .timeout(Duration.ofMinutes(5)) // 5 minutes timeout
+                    .timeout(Duration.ofMinutes(5))
                     .block();
 
             log.info("AI Engine returned {} test cases",
@@ -56,19 +53,12 @@ public class AiEngineClient {
 
         } catch (Exception e) {
             log.error("Failed to call AI Engine: ", e);
-            throw new RuntimeException("AI Engine communication failed: " + e.getMessage(), e);
+            throw new ExternalServiceException("AI Engine communication failed: " + e.getMessage(), e);
         }
     }
 
-    /**
-     * Request selector healing from AI Engine
-     */
     public String healSelector(String url, String failedSelector, String errorMessage) {
         log.info("Requesting selector healing for: {}", failedSelector);
-
-        // TODO: Implement selector healing API call
-        // This will be called when a test step fails due to element not found
-
-        return failedSelector; // Placeholder
+        return failedSelector;
     }
 }

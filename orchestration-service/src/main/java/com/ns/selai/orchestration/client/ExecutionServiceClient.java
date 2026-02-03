@@ -1,12 +1,14 @@
 package com.ns.selai.orchestration.client;
 
 import com.ns.selai.orchestration.dto.ai.AiAnalysisResponse;
+import com.ns.selai.orchestration.dto.ExternalServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
+import java.util.List;
 
 /**
  * Client to communicate with Execution Service
@@ -24,14 +26,10 @@ public class ExecutionServiceClient {
         this.webClient = webClientBuilder.build();
     }
 
-    /**
-     * Send test cases to Execution Service for running
-     */
     public void executeTests(Long testRunId, AiAnalysisResponse aiResponse) {
         log.info("Sending test cases to Execution Service for test run: {}", testRunId);
 
         try {
-            // Create execution request
             ExecutionRequest request = new ExecutionRequest(testRunId, aiResponse.getTests());
 
             webClient.post()
@@ -46,11 +44,10 @@ public class ExecutionServiceClient {
 
         } catch (Exception e) {
             log.error("Failed to start test execution: ", e);
-            throw new RuntimeException("Execution Service communication failed: " + e.getMessage(), e);
+            throw new ExternalServiceException("Execution Service communication failed: " + e.getMessage(), e);
         }
     }
 
-    // Inner class for request
-    record ExecutionRequest(Long testRunId, java.util.List<AiAnalysisResponse.TestCase> testCases) {
+    private record ExecutionRequest(Long testRunId, List<AiAnalysisResponse.TestCase> testCases) {
     }
 }
