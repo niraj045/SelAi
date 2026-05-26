@@ -151,17 +151,19 @@
 ### Repositories (3)
 1. `ProjectRepository` - Project data access
 2. `TestRunRepository` - Test run data access
-3. Pending: `TestExecutionRepository`
+3. `TestExecutionRepository` - Execution result data access
 
-### Services (3)
+### Services
 1. `ProjectService` - Project business logic
 2. `TestOrchestrationService` - **Core brain** of the system
-3. Pending: `TestExecutionService`
+3. `TestExecutionService` - Selenium execution orchestration
+4. `ReportService` - Report generation and rendering
 
-### Controllers (2)
+### Controllers
 1. `ProjectController` - 7 REST endpoints
 2. `TestRunController` - 5 REST endpoints
-3. Pending: `ExecutionController`
+3. `ExecutionController` - Execution endpoints
+4. `ReportController` - Report endpoints
 
 ### DTOs (5)
 1. `ProjectDTO` - Project data transfer
@@ -329,13 +331,13 @@ ns-backend-selAi/
 |-----------|--------|------------|
 | Test Management Service | ✅ Complete | 100% |
 | Orchestration Service | ✅ Complete | 100% |
-| Execution Service (Core) | ✅ Complete | 80% |
-| Reporting Service | ⏳ Pending | 0% |
-| API Gateway | ⏳ Pending | 0% |
+| Execution Service | ✅ Complete | 100% |
+| Reporting Service | ✅ Complete | 100% |
+| API Gateway | ✅ Complete | 100% |
 | Python AI Engine | ⏳ Pending | 0% |
 | Frontend | ⏳ Pending | 0% |
 
-**Overall Backend Progress:** ~65%
+**Overall Backend Progress:** 100%
 
 ---
 

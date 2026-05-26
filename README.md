@@ -19,14 +19,22 @@ A complete microservices-based backend for an AI-powered test automation platfor
    - Coordinates AI Engine and Execution Service
    - Async processing with Spring @Async
 
-3. **Execution Service** (Port 8083) - ✅ COMPLETE (Core Components)
+3. **Execution Service** (Port 8083) - ✅ COMPLETE
    - Selenium WebDriver execution
    - Screenshot capture
    - Step-by-step test execution
    - Browser management (Chrome, Firefox, Edge)
+   - Async execution callbacks to orchestration
 
-4. **Reporting Service** (Port 8084) - Pending
-5. **API Gateway** (Port 8080) - Pending
+4. **Reporting Service** (Port 8084) - ✅ COMPLETE
+   - Persistent report summaries
+   - HTML, Markdown, and PDF rendering
+   - Report download endpoints
+
+5. **API Gateway** (Port 8080) - ✅ COMPLETE
+   - Routes all backend services
+   - Global CORS configuration
+   - Optional bearer-token gate for deployed environments
 
 ---
 
@@ -410,29 +418,21 @@ ns-backend-selAi/
 
 ## 🎯 Next Steps
 
-1. **Complete Execution Service**
-   - Add ExecutionController
-   - Add TestExecutionService
-   - Add Repository layer
-
-2. **Build Reporting Service**
-   - PDF generation (Apache PDFBox)
-   - HTML generation (Thymeleaf)
-   - Markdown generation
-
-3. **Setup API Gateway**
-   - Spring Cloud Gateway
-   - JWT authentication
-   - Request routing
-
-4. **Python AI Engine**
+1. **Python AI Engine**
    - FastAPI service
    - DOM analysis
    - Test case generation
+   - Selector healing
 
-5. **Frontend**
+2. **Frontend**
    - React dashboard
    - Project management UI
+   - Test run and report screens
+
+3. **Production hardening**
+   - Replace the development bearer token with JWT validation
+   - Move credentials to environment variables or secrets
+   - Add rate limiting and tenant isolation
    - Test run monitoring
    - Report viewer
 

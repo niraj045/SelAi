@@ -40,8 +40,17 @@ public class TestExecution {
     @Column(name = "screenshot_path")
     private String screenshotPath;
 
+    @Column(name = "result_details", columnDefinition = "TEXT")
+    private String resultDetails;
+
     @Column(name = "execution_time_ms")
     private Long executionTimeMs;
+
+    @Column(name = "started_at")
+    private LocalDateTime startedAt;
+
+    @Column(name = "completed_at")
+    private LocalDateTime completedAt;
 
     @CreationTimestamp
     @Column(name = "executed_at")

@@ -22,15 +22,22 @@ public class ExecutionServiceClient {
     @Value("${execution.service.base-url:http://localhost:8083}")
     private String executionServiceBaseUrl;
 
+    @Value("${orchestration.public-base-url:http://localhost:8082}")
+    private String orchestrationPublicBaseUrl;
+
     public ExecutionServiceClient(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
     }
 
-    public void executeTests(Long testRunId, AiAnalysisResponse aiResponse) {
+    public void executeTests(Long testRunId, String browser, AiAnalysisResponse aiResponse) {
         log.info("Sending test cases to Execution Service for test run: {}", testRunId);
 
         try {
-            ExecutionRequest request = new ExecutionRequest(testRunId, aiResponse.getTests());
+            ExecutionRequest request = new ExecutionRequest(
+                    testRunId,
+                    browser,
+                    orchestrationPublicBaseUrl + "/api/test-runs/" + testRunId + "/results",
+                    aiResponse.getTests());
 
             webClient.post()
                     .uri(executionServiceBaseUrl + "/api/execute")
@@ -48,6 +55,10 @@ public class ExecutionServiceClient {
         }
     }
 
-    private record ExecutionRequest(Long testRunId, List<AiAnalysisResponse.TestCase> testCases) {
+    private record ExecutionRequest(
+            Long testRunId,
+            String browser,
+            String callbackUrl,
+            List<AiAnalysisResponse.TestCase> testCases) {
     }
 }

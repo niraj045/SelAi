@@ -56,6 +56,9 @@ public class TestRun {
     @Column(name = "error_message", columnDefinition = "TEXT")
     private String errorMessage;
 
+    @Column(name = "user_prompt", columnDefinition = "TEXT")
+    private String userPrompt;
+
     // Add relationship later if needed
     // @OneToMany(mappedBy = "testRun", cascade = CascadeType.ALL)
     // private List<TestExecution> testExecutions;

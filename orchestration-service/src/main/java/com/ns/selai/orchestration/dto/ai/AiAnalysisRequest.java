@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class AiAnalysisRequest {
     private String url;
     private Context context;
+    private String userPrompt;
 
     @Data
     @Builder

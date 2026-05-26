@@ -11,4 +11,6 @@ public interface TestExecutionRepository extends JpaRepository<TestExecution, Lo
 
     // Find all test executions for a given test run ID
     List<TestExecution> findByTestRunId(Long testRunId);
+
+    List<TestExecution> findByTestRunIdOrderByExecutedAtAsc(Long testRunId);
 }

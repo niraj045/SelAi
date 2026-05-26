@@ -21,4 +21,6 @@ public interface TestRunRepository extends JpaRepository<TestRun, Long> {
 
     // Find recent test runs for a project (ordered by started_at desc)
     List<TestRun> findByProjectIdOrderByStartedAtDesc(Long projectId);
+
+    List<TestRun> findAllByOrderByStartedAtDesc();
 }

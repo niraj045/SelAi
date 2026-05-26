@@ -24,4 +24,5 @@ public class TestRunResponse {
     private Integer passedTests;
     private Integer failedTests;
     private String errorMessage;
+    private String userPrompt;
 }

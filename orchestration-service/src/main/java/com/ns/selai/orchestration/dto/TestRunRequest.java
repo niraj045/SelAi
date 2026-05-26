@@ -24,5 +24,6 @@ public class TestRunRequest {
     private String browser; // chrome, firefox, edge
     @Pattern(regexp = "smoke|regression|functional", message = "Test type must be smoke, regression, or functional")
     private String testType; // smoke, regression, functional
-    private String userId; // For tracking who initiated the test
+    private String userId;
+    private String userPrompt;
 }

@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping("/api/test-runs")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
 public class TestRunController {
 
     private final TestOrchestrationService orchestrationService;
@@ -29,6 +28,13 @@ public class TestRunController {
         log.info("REST request to start test run for project: {}", request.getProjectId());
         TestRunResponse response = orchestrationService.startTestRun(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TestRunResponse>> getAllTestRuns() {
+        log.info("REST request to get all test runs");
+        List<TestRunResponse> responses = orchestrationService.getAllTestRuns();
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{id}")
@@ -58,10 +64,16 @@ public class TestRunController {
             @RequestBody ResultsUpdate update) {
         log.info("Updating results for test run {}: passed={}, failed={}",
                 id, update.passed(), update.failed());
-        orchestrationService.updateTestRunResults(id, update.passed(), update.failed());
+        orchestrationService.updateTestRunResults(
+                id,
+                update.total(),
+                update.passed(),
+                update.failed(),
+                update.status(),
+                update.errorMessage());
         return ResponseEntity.ok().build();
     }
 
-    public record ResultsUpdate(int passed, int failed) {
+    public record ResultsUpdate(Integer total, int passed, int failed, String status, String errorMessage) {
     }
 }

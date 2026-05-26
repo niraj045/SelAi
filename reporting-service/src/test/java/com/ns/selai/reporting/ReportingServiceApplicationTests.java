@@ -1,10 +1,10 @@
-package com.example.api_gateway;
+package com.ns.selai.reporting;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ApiGatewayApplicationTests {
+class ReportingServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -5,8 +5,8 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -28,7 +28,7 @@ public class ScreenshotService {
         this.driver = driver;
     }
 
-    @Value("${screenshot.storage.path:./screenshots}")
+    @Value("${execution.screenshot.path:${screenshot.storage.path:./screenshots}}")
     private String screenshotBasePath;
 
     public String captureScreenshot(String stepName) {
@@ -37,6 +37,14 @@ public class ScreenshotService {
 
     public String captureScreenshot(WebDriver driver, Long testRunId, String stepName) {
         try {
+            if (driver == null) {
+                return null;
+            }
+            if (!(driver instanceof TakesScreenshot)) {
+                log.warn("Current driver does not support screenshots");
+                return null;
+            }
+
             String testRunDir = screenshotBasePath + "/test-run-" + testRunId;
             Files.createDirectories(Paths.get(testRunDir));
 

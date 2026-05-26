@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
+import java.util.List;
 
 /**
  * Client to communicate with Python AI Engine
@@ -22,11 +23,14 @@ public class AiEngineClient {
     @Value("${ai.engine.base-url:http://localhost:5000}")
     private String aiEngineBaseUrl;
 
+    @Value("${ai.engine.fallback-enabled:true}")
+    private boolean fallbackEnabled;
+
     public AiEngineClient(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
     }
 
-    public AiAnalysisResponse analyzeAndGenerateTests(String url, String browser, String testType) {
+    public AiAnalysisResponse analyzeAndGenerateTests(String url, String browser, String testType, String userPrompt) {
         log.info("Calling AI Engine to analyze URL: {}", url);
 
         AiAnalysisRequest request = AiAnalysisRequest.builder()
@@ -35,6 +39,7 @@ public class AiEngineClient {
                         .browser(browser)
                         .testType(testType)
                         .build())
+                .userPrompt(userPrompt)
                 .build();
 
         try {
@@ -52,6 +57,11 @@ public class AiEngineClient {
             return response;
 
         } catch (Exception e) {
+            if (fallbackEnabled) {
+                log.warn("AI Engine unavailable. Using local fallback smoke test for {}: {}", url, e.getMessage());
+                return buildFallbackSmokeTest(url);
+            }
+
             log.error("Failed to call AI Engine: ", e);
             throw new ExternalServiceException("AI Engine communication failed: " + e.getMessage(), e);
         }
@@ -60,5 +70,27 @@ public class AiEngineClient {
     public String healSelector(String url, String failedSelector, String errorMessage) {
         log.info("Requesting selector healing for: {}", failedSelector);
         return failedSelector;
+    }
+
+    private AiAnalysisResponse buildFallbackSmokeTest(String url) {
+        AiAnalysisResponse.TestStep openPage = AiAnalysisResponse.TestStep.builder()
+                .action("open_url")
+                .url(url)
+                .build();
+
+        AiAnalysisResponse.TestStep bodyVisible = AiAnalysisResponse.TestStep.builder()
+                .action("assert_element_present")
+                .selector("body")
+                .build();
+
+        AiAnalysisResponse.TestCase smokeTest = AiAnalysisResponse.TestCase.builder()
+                .name("Fallback Smoke Test")
+                .description("Opens the target URL and verifies the page body is present.")
+                .steps(List.of(openPage, bodyVisible))
+                .build();
+
+        return AiAnalysisResponse.builder()
+                .tests(List.of(smokeTest))
+                .build();
     }
 }
